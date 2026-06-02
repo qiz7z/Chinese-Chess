@@ -250,14 +250,14 @@ const handleHint = () => {
   min-height: 100vh;
   max-height: 100vh;
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 300px 1fr;
   background: linear-gradient(135deg, #FEF2F2 0%, #FFF5F5 100%);
   overflow: hidden;
 }
 
 /* Game Board Area */
 .game-board-area {
-  grid-column: 1 / 2;
+  grid-column: 2 / 3;
   grid-row: 1 / 2;
   display: flex;
   justify-content: center;
@@ -377,7 +377,7 @@ const handleHint = () => {
 
 /* Game Board Area */
 .game-board-area {
-  grid-column: 1 / 2;
+  grid-column: 2 / 3;
   grid-row: 1 / 2;
   display: flex;
   justify-content: center;
@@ -388,11 +388,11 @@ const handleHint = () => {
 
 /* Game Controls Panel */
 .game-controls-panel {
-  grid-column: 2 / 3;
+  grid-column: 1 / 2;
   grid-row: 1 / 2;
   background: white;
   padding: 1.5rem 1rem;
-  border-left: 1px solid rgba(220, 38, 38, 0.1);
+  border-right: 1px solid rgba(220, 38, 38, 0.1);
   overflow-y: auto;
   max-height: 100vh;
 }
@@ -622,7 +622,7 @@ const handleHint = () => {
   .game-controls-panel {
     grid-column: 1 / -1;
     grid-row: 2 / 3;
-    border-left: none;
+    border-right: none;
     border-top: 1px solid rgba(220, 38, 38, 0.1);
     max-height: 40vh;
   }

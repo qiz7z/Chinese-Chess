@@ -4,62 +4,107 @@ import { PIECE_VALUES } from '../types'
 // 棋盘评估函数
 export function evaluateBoard(board: Board, color: PieceColor): number {
   let score = 0
-  
+  let myPieces = 0
+  let enemyPieces = 0
+
   for (let y = 0; y < 10; y++) {
     for (let x = 0; x < 9; x++) {
       const piece = board.pieces[y][x]
       if (piece) {
         const pieceValue = PIECE_VALUES[piece.type]
         const positionBonus = getPositionBonus(piece, x, y)
-        
+
         if (piece.color === color) {
           score += pieceValue + positionBonus
+          myPieces++
         } else {
           score -= pieceValue + positionBonus
+          enemyPieces++
         }
       }
     }
   }
-  
+
+  // 如果对方没有将/帅，给予极高奖励（将死）
+  if (enemyPieces === 0) {
+    score += 1000000
+  }
+
+  // 如果己方没有将/帅，给予极低惩罚（被将死）
+  if (myPieces === 0) {
+    score -= 1000000
+  }
+
   return score
 }
 
-// 棋子位置价值（简化版）
+// 棋子位置价值（完整版）
 function getPositionBonus(piece: Piece, x: number, y: number): number {
-  const bonus: Record<string, number> = {
-    soldier: 0,
-    cannon: 0,
-    horse: 0,
-    elephant: 0,
-    advisor: 0,
-    general: 0,
-    chariot: 0,
-  }
-  
-  // 兵过河加分
+  let bonus = 0
+
+  // 兵/卒位置价值
   if (piece.type === 'soldier') {
-    if (piece.color === 'red' && y > 4) {
-      bonus.soldier = 20 + (y - 4) * 10 // 越靠近对方加分越多
-    } else if (piece.color === 'black' && y < 5) {
-      bonus.soldier = 20 + (5 - y) * 10
+    if (piece.color === 'red') {
+      // 红兵过河后越靠近对方加分越多
+      if (y < 5) {
+        bonus = 30 + (5 - y) * 15
+      } else {
+        bonus = (9 - y) * 5
+      }
+    } else {
+      // 黑卒过河后越靠近对方加分越多
+      if (y > 4) {
+        bonus = 30 + (y - 4) * 15
+      } else {
+        bonus = y * 5
+      }
     }
   }
-  
-  // 车在中心线加分
-  if (piece.type === 'chariot' && x >= 3 && x <= 5) {
-    bonus.chariot = 10
+
+  // 车位置价值
+  if (piece.type === 'chariot') {
+    // 车在中心线加分
+    if (x >= 3 && x <= 5) bonus += 20
+    // 车在对方半场加分
+    if (piece.color === 'red' && y < 5) bonus += 30
+    if (piece.color === 'black' && y > 4) bonus += 30
   }
-  
-  // 马在前线加分
+
+  // 马位置价值
   if (piece.type === 'horse') {
-    if (piece.color === 'red' && y > 4) {
-      bonus.horse = 15
-    } else if (piece.color === 'black' && y < 5) {
-      bonus.horse = 15
-    }
+    // 马在对方半场加分
+    if (piece.color === 'red' && y < 5) bonus += 25
+    if (piece.color === 'black' && y > 4) bonus += 25
+    // 马在中心区域加分
+    if (x >= 2 && x <= 6) bonus += 10
   }
-  
-  return bonus[piece.type] || 0
+
+  // 炮位置价值
+  if (piece.type === 'cannon') {
+    // 炮在对方半场加分
+    if (piece.color === 'red' && y < 5) bonus += 20
+    if (piece.color === 'black' && y > 4) bonus += 20
+  }
+
+  // 将/帅位置价值（保持在原位）
+  if (piece.type === 'general') {
+    if (piece.color === 'red' && y === 9 && x === 4) bonus += 10
+    if (piece.color === 'black' && y === 0 && x === 4) bonus += 10
+  }
+
+  // 士/仕位置价值
+  if (piece.type === 'advisor') {
+    if (piece.color === 'red' && y >= 7 && y <= 9) bonus += 5
+    if (piece.color === 'black' && y >= 0 && y <= 2) bonus += 5
+  }
+
+  // 象/相位置价值
+  if (piece.type === 'elephant') {
+    if (piece.color === 'red' && y >= 5 && y <= 9) bonus += 5
+    if (piece.color === 'black' && y >= 0 && y <= 4) bonus += 5
+  }
+
+  return bonus
 }
 
 // 生成所有合法走法
@@ -144,12 +189,13 @@ function isValidGeneralMove(board: Board, from: Position, to: Position, color: P
   const dy = to.y - from.y
   const absDx = Math.abs(dx)
   const absDy = Math.abs(dy)
-  
+
   // 只能在九宫格内
   if (to.x < 3 || to.x > 5) return false
-  if (color === 'red' && (to.y < 0 || to.y > 2)) return false
-  if (color === 'black' && (to.y < 7 || to.y > 9)) return false
-  
+  // 红方在下方(y=7-9)，黑方在上方(y=0-2)
+  if (color === 'red' && (to.y < 7 || to.y > 9)) return false
+  if (color === 'black' && (to.y < 0 || to.y > 2)) return false
+
   // 只能走 1 格
   return (absDx === 1 && absDy === 0) || (absDx === 0 && absDy === 1)
 }
@@ -158,12 +204,13 @@ function isValidGeneralMove(board: Board, from: Position, to: Position, color: P
 function isValidAdvisorMove(from: Position, to: Position, color: PieceColor): boolean {
   const absDx = Math.abs(to.x - from.x)
   const absDy = Math.abs(to.y - from.y)
-  
+
   // 只能在九宫格内
   if (to.x < 3 || to.x > 5) return false
-  if (color === 'red' && (to.y < 0 || to.y > 2)) return false
-  if (color === 'black' && (to.y < 7 || to.y > 9)) return false
-  
+  // 红方在下方(y=7-9)，黑方在上方(y=0-2)
+  if (color === 'red' && (to.y < 7 || to.y > 9)) return false
+  if (color === 'black' && (to.y < 0 || to.y > 2)) return false
+
   // 只能走斜线 1 格
   return absDx === 1 && absDy === 1
 }
@@ -174,19 +221,19 @@ function isValidElephantMove(board: Board, from: Position, to: Position, color: 
   const dy = to.y - from.y
   const absDx = Math.abs(dx)
   const absDy = Math.abs(dy)
-  
-  // 不能过河
-  if (color === 'red' && to.y > 4) return false
-  if (color === 'black' && to.y < 5) return false
-  
+
+  // 不能过河：红方在下方(y>=5)，黑方在上方(y<=4)
+  if (color === 'red' && to.y < 5) return false
+  if (color === 'black' && to.y > 4) return false
+
   // 走田字
   if (absDx !== 2 || absDy !== 2) return false
-  
+
   // 塞象眼检测
   const eyeX = from.x + dx / 2
   const eyeY = from.y + dy / 2
   if (board.pieces[eyeY][eyeX]) return false
-  
+
   return true
 }
 
@@ -239,18 +286,19 @@ function isValidSoldierMove(from: Position, to: Position, color: PieceColor): bo
   const dy = to.y - from.y
   const absDx = Math.abs(dx)
   const absDy = Math.abs(dy)
-  
+
   // 只能走 1 格
   if (absDx + absDy !== 1) return false
-  
+
   // 不能后退
   if (color === 'red' && dy > 0) return false
   if (color === 'black' && dy < 0) return false
-  
-  // 未过河只能前进
-  if (color === 'red' && from.y <= 4 && dx !== 0) return false
-  if (color === 'black' && from.y >= 5 && dx !== 0) return false
-  
+
+  // 过河前只能向前走，不能横走
+  // 红方在下方(y>=5)，过河前是 y>=5；黑方在上方(y<=4)，过河前是 y<=4
+  if (color === 'red' && from.y >= 5 && dx !== 0) return false
+  if (color === 'black' && from.y <= 4 && dx !== 0) return false
+
   return true
 }
 
@@ -300,25 +348,33 @@ function getBestMoveSimple(board: Board, color: PieceColor): Move | null {
 // 评估走棋价值
 function evaluateMove(board: Board, move: Move, color: PieceColor): number {
   let score = 0
-  
-  // 吃子价值
+
+  // 吃子价值（高权重）
   if (move.captured) {
     score += PIECE_VALUES[move.captured.type] * 10
   }
-  
-  // 目标位置价值
-  const target = board.pieces[move.to.y][move.to.x]
-  if (target && target.color !== color) {
-    score += PIECE_VALUES[target.type]
-  }
-  
+
   // 位置价值
   const piece = move.piece
-  score += getPositionBonus(piece, move.to.x, move.to.y)
-  
-  // 随机性，避免每次都走一样的
-  score += Math.random() * 10
-  
+  const oldBonus = getPositionBonus(piece, move.from.x, move.from.y)
+  const newBonus = getPositionBonus(piece, move.to.x, move.to.y)
+  score += (newBonus - oldBonus)
+
+  // 保护己方棋子（如果移动后能保护其他棋子）
+  // 简化：如果移动后位置更好，给额外奖励
+  if (newBonus > oldBonus) {
+    score += 20
+  }
+
+  // 将军奖励
+  const target = board.pieces[move.to.y][move.to.x]
+  if (target && target.type === 'general') {
+    score += 100000 // 将死对方帅/将
+  }
+
+  // 随机性，避免每次都走一样的（小幅度）
+  score += Math.random() * 5
+
   return score
 }
 

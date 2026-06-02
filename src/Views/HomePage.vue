@@ -5,14 +5,22 @@
       <div class="nav-container">
         <div class="logo">
           <span class="logo-icon">♟</span>
-          <span class="logo-text">中国象棋</span>
+          <span class="logo-text">{{ t('logo') }}</span>
         </div>
-        <button @click="goToGame" class="play-btn">
-          开始游戏
-          <svg class="arrow-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </button>
+        <div class="nav-right">
+          <button @click="toggleLanguage" class="lang-btn">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+            </svg>
+            <span>{{ currentLang === 'zh' ? 'EN' : '中' }}</span>
+          </button>
+          <button @click="goToGame" class="play-btn">
+            {{ t('startGame') }}
+            <svg class="arrow-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </div>
       </div>
     </nav>
 
@@ -20,35 +28,35 @@
     <section class="hero">
       <div class="hero-content">
         <h1 class="hero-title">
-          <span class="title-line">千年智慧</span>
-          <span class="title-line highlight">楚河汉界</span>
+          <span class="title-line">{{ t('heroTitle1') }}</span>
+          <span class="title-line highlight">{{ t('heroTitle2') }}</span>
         </h1>
-        <p class="hero-subtitle">体验中国传统棋艺的魅力</p>
-        
+        <p class="hero-subtitle">{{ t('heroSubtitle') }}</p>
+
         <div class="hero-cta">
           <button @click="goToGame" class="cta-button primary">
-            立即对战
+            {{ t('playNow') }}
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </button>
           <button @click="scrollToFeatures" class="cta-button secondary">
-            了解更多
+            {{ t('learnMore') }}
           </button>
         </div>
 
         <div class="hero-stats">
           <div class="stat">
             <span class="stat-number">1000+</span>
-            <span class="stat-label">年历史</span>
+            <span class="stat-label">{{ t('yearsHistory') }}</span>
           </div>
           <div class="stat">
             <span class="stat-number">32</span>
-            <span class="stat-label">枚棋子</span>
+            <span class="stat-label">{{ t('pieces') }}</span>
           </div>
           <div class="stat">
             <span class="stat-number">AI</span>
-            <span class="stat-label">智能对战</span>
+            <span class="stat-label">{{ t('aiBattle') }}</span>
           </div>
         </div>
       </div>
@@ -56,15 +64,15 @@
       <div class="hero-visual">
         <div class="board-preview">
           <div class="preview-grid"></div>
-          
+
           <!-- 装饰性棋子 -->
           <div class="preview-pieces">
-            <div class="preview-piece red-chariot" style="--piece-x: 1; --piece-y: 1;">车</div>
-            <div class="preview-piece red-horse" style="--piece-x: 3; --piece-y: 2;">马</div>
+            <div class="preview-piece red-chariot" style="--piece-x: 1; --piece-y: 1;">車</div>
+            <div class="preview-piece red-horse" style="--piece-x: 3; --piece-y: 2;">馬</div>
             <div class="preview-piece red-cannon" style="--piece-x: 7; --piece-y: 3;">炮</div>
-            <div class="preview-piece black-chariot" style="--piece-x: 2; --piece-y: 6;">车</div>
-            <div class="preview-piece black-horse" style="--piece-x: 5; --piece-y: 7;">马</div>
-            <div class="preview-piece black-cannon" style="--piece-x: 8; --piece-y: 8;">炮</div>
+            <div class="preview-piece black-chariot" style="--piece-x: 2; --piece-y: 6;">車</div>
+            <div class="preview-piece black-horse" style="--piece-x: 5; --piece-y: 7;">馬</div>
+            <div class="preview-piece black-cannon" style="--piece-x: 8; --piece-y: 8;">砲</div>
           </div>
         </div>
       </div>
@@ -73,8 +81,8 @@
     <!-- Features Section -->
     <section id="features" class="features">
       <div class="section-header">
-        <h2 class="section-title">游戏特色</h2>
-        <p class="section-subtitle">经典规则，现代体验</p>
+        <h2 class="section-title">{{ t('featuresTitle') }}</h2>
+        <p class="section-subtitle">{{ t('featuresSubtitle') }}</p>
       </div>
 
       <div class="features-grid">
@@ -84,8 +92,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 class="feature-title">双人对战</h3>
-          <p class="feature-desc">与朋友同屏对弈，享受面对面博弈的乐趣</p>
+          <h3 class="feature-title">{{ t('feature1Title') }}</h3>
+          <p class="feature-desc">{{ t('feature1Desc') }}</p>
         </div>
 
         <div class="feature-card">
@@ -94,8 +102,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 class="feature-title">人机对战</h3>
-          <p class="feature-desc">两种 AI 难度，从新手到大师都能找到对手</p>
+          <h3 class="feature-title">{{ t('feature2Title') }}</h3>
+          <p class="feature-desc">{{ t('feature2Desc') }}</p>
         </div>
 
         <div class="feature-card">
@@ -104,8 +112,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 class="feature-title">完整规则</h3>
-          <p class="feature-desc">标准中国象棋规则，自动验证合法走法</p>
+          <h3 class="feature-title">{{ t('feature3Title') }}</h3>
+          <p class="feature-desc">{{ t('feature3Desc') }}</p>
         </div>
 
         <div class="feature-card">
@@ -114,8 +122,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <h3 class="feature-title">智能提示</h3>
-          <p class="feature-desc">将军检测、悔棋功能、走法提示</p>
+          <h3 class="feature-title">{{ t('feature4Title') }}</h3>
+          <p class="feature-desc">{{ t('feature4Desc') }}</p>
         </div>
       </div>
     </section>
@@ -123,10 +131,10 @@
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="cta-content">
-        <h2 class="cta-title">准备好开始了吗？</h2>
-        <p class="cta-desc">立即体验中国最经典的策略游戏</p>
+        <h2 class="cta-title">{{ t('ctaTitle') }}</h2>
+        <p class="cta-desc">{{ t('ctaDesc') }}</p>
         <button @click="goToGame" class="cta-button large">
-          开始游戏
+          {{ t('startGame') }}
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
@@ -137,16 +145,84 @@
     <!-- Footer -->
     <footer class="footer">
       <div class="footer-content">
-        <p>&copy; 2026 中国象棋游戏。传承经典，智享未来</p>
+        <p>&copy; 2026 {{ t('footer') }}</p>
       </div>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+// 语言状态
+const currentLang = ref<'zh' | 'en'>('zh')
+
+// 多语言配置
+const messages = {
+  zh: {
+    logo: '中国象棋',
+    startGame: '开始游戏',
+    heroTitle1: '千年智慧',
+    heroTitle2: '楚河汉界',
+    heroSubtitle: '体验中国传统棋艺的魅力',
+    playNow: '立即对战',
+    learnMore: '了解更多',
+    yearsHistory: '年历史',
+    pieces: '枚棋子',
+    aiBattle: '智能对战',
+    featuresTitle: '游戏特色',
+    featuresSubtitle: '经典规则，现代体验',
+    feature1Title: '双人对战',
+    feature1Desc: '与朋友同屏对弈，享受面对面博弈的乐趣',
+    feature2Title: '人机对战',
+    feature2Desc: '两种 AI 难度，从新手到大师都能找到对手',
+    feature3Title: '完整规则',
+    feature3Desc: '标准中国象棋规则，自动验证合法走法',
+    feature4Title: '智能提示',
+    feature4Desc: '将军检测、悔棋功能、走法提示',
+    ctaTitle: '准备好开始了吗？',
+    ctaDesc: '立即体验中国最经典的策略游戏',
+    footer: '中国象棋游戏。传承经典，智享未来'
+  },
+  en: {
+    logo: 'Chinese Chess',
+    startGame: 'Play Now',
+    heroTitle1: 'Ancient Wisdom',
+    heroTitle2: 'Riverside Battle',
+    heroSubtitle: 'Experience the charm of traditional Chinese chess',
+    playNow: 'Start Game',
+    learnMore: 'Learn More',
+    yearsHistory: 'Years of History',
+    pieces: 'Chess Pieces',
+    aiBattle: 'AI Battle',
+    featuresTitle: 'Features',
+    featuresSubtitle: 'Classic rules, modern experience',
+    feature1Title: 'Two Player',
+    feature1Desc: 'Play against friends on the same screen for face-to-face fun',
+    feature2Title: 'vs AI',
+    feature2Desc: 'Two AI difficulty levels, from beginner to master',
+    feature3Title: 'Full Rules',
+    feature3Desc: 'Standard Chinese chess rules with automatic move validation',
+    feature4Title: 'Smart Hints',
+    feature4Desc: 'Check detection, undo moves, move suggestions',
+    ctaTitle: 'Ready to Play?',
+    ctaDesc: "Experience China's most classic strategy game now",
+    footer: 'Chinese Chess Game. Preserving tradition, enjoying wisdom'
+  }
+}
+
+// 翻译函数
+const t = (key: string): string => {
+  return (messages[currentLang.value] as any)[key] || key
+}
+
+// 切换语言
+const toggleLanguage = () => {
+  currentLang.value = currentLang.value === 'zh' ? 'en' : 'zh'
+}
 
 const goToGame = () => {
   router.push('/game')
@@ -200,6 +276,37 @@ const scrollToFeatures = () => {
   font-size: 1.5rem;
   font-weight: 700;
   color: #7F1D1D;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  color: #7F1D1D;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: #DC2626;
+}
+
+.lang-btn svg {
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .play-btn {
@@ -357,7 +464,7 @@ const scrollToFeatures = () => {
   height: 500px;
   background: linear-gradient(135deg, #DEB887 0%, #D2A679 100%);
   border-radius: 1rem;
-  box-shadow: 
+  box-shadow:
     0 25px 50px rgba(0, 0, 0, 0.2),
     0 0 0 10px rgba(220, 38, 38, 0.1);
   overflow: hidden;
@@ -370,7 +477,7 @@ const scrollToFeatures = () => {
   transform: translate(-50%, -50%);
   width: 90%;
   height: 90%;
-  background-image: 
+  background-image:
     linear-gradient(#8B4513 1px, transparent 1px),
     linear-gradient(90deg, #8B4513 1px, transparent 1px);
   background-size: 50px 50px;
@@ -393,7 +500,7 @@ const scrollToFeatures = () => {
   border-radius: 50%;
   background: linear-gradient(135deg, #F5DEB3 0%, #DEB887 100%);
   border: 3px solid #8B4513;
-  box-shadow: 
+  box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.3),
     inset 0 -3px 6px rgba(0, 0, 0, 0.2);
   display: flex;
@@ -410,7 +517,7 @@ const scrollToFeatures = () => {
 
 .preview-piece:hover {
   transform: translate(-50%, -50%) scale(1.1);
-  box-shadow: 
+  box-shadow:
     0 8px 16px rgba(0, 0, 0, 0.4),
     inset 0 -3px 6px rgba(0, 0, 0, 0.2);
 }

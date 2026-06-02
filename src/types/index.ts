@@ -59,27 +59,9 @@ export const PIECE_VALUES: Record<PieceType, number> = {
   soldier: 100
 }
 
-// 棋子初始位置
+// 棋子初始位置（红方在下方，黑方在上方）
 export const INITIAL_POSITIONS = {
   red: [
-    { type: 'chariot', position: { x: 0, y: 0 } },
-    { type: 'horse', position: { x: 1, y: 0 } },
-    { type: 'elephant', position: { x: 2, y: 0 } },
-    { type: 'advisor', position: { x: 3, y: 0 } },
-    { type: 'general', position: { x: 4, y: 0 } },
-    { type: 'advisor', position: { x: 5, y: 0 } },
-    { type: 'elephant', position: { x: 6, y: 0 } },
-    { type: 'horse', position: { x: 7, y: 0 } },
-    { type: 'chariot', position: { x: 8, y: 0 } },
-    { type: 'cannon', position: { x: 1, y: 2 } },
-    { type: 'cannon', position: { x: 7, y: 2 } },
-    { type: 'soldier', position: { x: 0, y: 3 } },
-    { type: 'soldier', position: { x: 2, y: 3 } },
-    { type: 'soldier', position: { x: 4, y: 3 } },
-    { type: 'soldier', position: { x: 6, y: 3 } },
-    { type: 'soldier', position: { x: 8, y: 3 } },
-  ],
-  black: [
     { type: 'chariot', position: { x: 0, y: 9 } },
     { type: 'horse', position: { x: 1, y: 9 } },
     { type: 'elephant', position: { x: 2, y: 9 } },
@@ -96,5 +78,23 @@ export const INITIAL_POSITIONS = {
     { type: 'soldier', position: { x: 4, y: 6 } },
     { type: 'soldier', position: { x: 6, y: 6 } },
     { type: 'soldier', position: { x: 8, y: 6 } },
+  ],
+  black: [
+    { type: 'chariot', position: { x: 0, y: 0 } },
+    { type: 'horse', position: { x: 1, y: 0 } },
+    { type: 'elephant', position: { x: 2, y: 0 } },
+    { type: 'advisor', position: { x: 3, y: 0 } },
+    { type: 'general', position: { x: 4, y: 0 } },
+    { type: 'advisor', position: { x: 5, y: 0 } },
+    { type: 'elephant', position: { x: 6, y: 0 } },
+    { type: 'horse', position: { x: 7, y: 0 } },
+    { type: 'chariot', position: { x: 8, y: 0 } },
+    { type: 'cannon', position: { x: 1, y: 2 } },
+    { type: 'cannon', position: { x: 7, y: 2 } },
+    { type: 'soldier', position: { x: 0, y: 3 } },
+    { type: 'soldier', position: { x: 2, y: 3 } },
+    { type: 'soldier', position: { x: 4, y: 3 } },
+    { type: 'soldier', position: { x: 6, y: 3 } },
+    { type: 'soldier', position: { x: 8, y: 3 } },
   ],
 }

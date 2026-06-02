@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import type { GameState, Piece, Move, Position, Board, GameMode } from '../types'
 import { PIECE_VALUES, INITIAL_POSITIONS } from '../types'
 import { isValidMove, generateValidMoves, isCheckState, isCheckmate, generateNotation } from '../rules/validator'
+import { makeAIMove } from '../ai/engine'
 
 function createInitialBoard(): Board {
   const pieces: (Piece | null)[][] = Array(10).fill(null).map(() => Array(9).fill(null))
@@ -49,6 +50,9 @@ export const useGameStore = defineStore('game', () => {
 
   // 选择棋子
   const selectPiece = (piece: Piece | null) => {
+    // 游戏已结束，不允许选棋
+    if (isGameOver.value) return
+
     selectedPiece.value = piece
     if (piece && piece.color === currentTurn.value) {
       validMoves.value = generateValidMoves(board.value, piece.position)
@@ -76,8 +80,24 @@ export const useGameStore = defineStore('game', () => {
     validMoves.value = []
   }
 
+  // 检查是否还有将/帅
+  const hasGeneral = (color: PieceColor): boolean => {
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 9; x++) {
+        const piece = board.value.pieces[y][x]
+        if (piece && piece.type === 'general' && piece.color === color) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
   // 走棋
   const makeMove = (from: Position, to: Position): boolean => {
+    // 游戏已结束，不允许走棋
+    if (isGameOver.value) return false
+
     const piece = getPieceAt(from)
     if (!piece || piece.color !== currentTurn.value) {
       return false
@@ -89,7 +109,7 @@ export const useGameStore = defineStore('game', () => {
     }
 
     const captured = getPieceAt(to)
-    
+
     // 移动棋子
     board.value.pieces[to.y][to.x] = piece
     board.value.pieces[from.y][from.x] = null
@@ -111,12 +131,92 @@ export const useGameStore = defineStore('game', () => {
 
     // 检查是否将军（比将死检测快）
     isCheck.value = isCheckState(board.value, currentTurn.value)
-    
+
     // 清除选择
     selectedPiece.value = null
     validMoves.value = []
 
+    // 检查是否吃掉了对方的将/帅
+    if (captured && captured.type === 'general') {
+      isGameOver.value = true
+      winner.value = captured.color === 'red' ? 'black' : 'red'
+      return true
+    }
+
+    // 检查游戏是否结束（将死）
+    if (isCheckmate(board.value, currentTurn.value)) {
+      isGameOver.value = true
+      winner.value = currentTurn.value === 'red' ? 'black' : 'red'
+      return true
+    }
+
+    // 人机模式下，AI 自动走棋
+    if (gameMode.value !== 'pvp' && currentTurn.value === 'black') {
+      setTimeout(() => {
+        makeComputerMove()
+      }, 500) // 延迟 500ms 让玩家看到自己的走法
+    }
+
     return true
+  }
+
+  // AI 走棋
+  const makeComputerMove = () => {
+    if (isGameOver.value || currentTurn.value !== 'black') return
+
+    // AI 深度：简单 AI 为 1，强力 AI 为 3
+    const depth = gameMode.value === 'ai-hard' ? 3 : 1
+    const aiMove = makeAIMove(board.value, depth, 'black')
+
+    if (!aiMove) {
+      // AI 无棋可走，玩家获胜
+      isGameOver.value = true
+      winner.value = 'red'
+      return
+    }
+
+    // 执行 AI 走棋
+    const from = aiMove.from
+    const to = aiMove.to
+    const piece = getPieceAt(from)
+    if (!piece) return
+
+    const captured = getPieceAt(to)
+
+    // 移动棋子
+    board.value.pieces[to.y][to.x] = piece
+    board.value.pieces[from.y][from.x] = null
+    piece.position = { ...to }
+
+    // 记录走棋历史
+    const move: Move = {
+      from,
+      to,
+      piece: { ...piece },
+      captured: captured ? { ...captured } : undefined,
+      notation: generateNotation(piece, from, to, captured),
+    }
+    moveHistory.value.push(move)
+    lastMove.value = move
+
+    // 切换回合
+    currentTurn.value = 'red'
+
+    // 检查是否将军
+    isCheck.value = isCheckState(board.value, currentTurn.value)
+
+    // 检查是否吃掉了对方的将/帅
+    if (captured && captured.type === 'general') {
+      isGameOver.value = true
+      winner.value = 'black'
+      return
+    }
+
+    // 检查游戏是否结束（将死）
+    if (isCheckmate(board.value, 'red')) {
+      isGameOver.value = true
+      winner.value = 'black'
+    }
   }
 
   // 悔棋

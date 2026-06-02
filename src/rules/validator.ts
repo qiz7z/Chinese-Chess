@@ -33,11 +33,13 @@ function isValidGeneralMove(from: Position, to: Position, color: PieceColor): bo
   const dy = to.y - from.y
   const absDx = Math.abs(dx)
   const absDy = Math.abs(dy)
-  
+
+  // 九宫格范围：x=3-5
   if (to.x < 3 || to.x > 5) return false
-  if (color === 'red' && (to.y < 0 || to.y > 2)) return false
-  if (color === 'black' && (to.y < 7 || to.y > 9)) return false
-  
+  // 红方在下方(y=7-9)，黑方在上方(y=0-2)
+  if (color === 'red' && (to.y < 7 || to.y > 9)) return false
+  if (color === 'black' && (to.y < 0 || to.y > 2)) return false
+
   return (absDx === 1 && absDy === 0) || (absDx === 0 && absDy === 1)
 }
 
@@ -46,11 +48,13 @@ function isValidAdvisorMove(from: Position, to: Position, color: PieceColor): bo
   const dy = to.y - from.y
   const absDx = Math.abs(dx)
   const absDy = Math.abs(dy)
-  
+
+  // 九宫格范围：x=3-5
   if (to.x < 3 || to.x > 5) return false
-  if (color === 'red' && (to.y < 0 || to.y > 2)) return false
-  if (color === 'black' && (to.y < 7 || to.y > 9)) return false
-  
+  // 红方在下方(y=7-9)，黑方在上方(y=0-2)
+  if (color === 'red' && (to.y < 7 || to.y > 9)) return false
+  if (color === 'black' && (to.y < 0 || to.y > 2)) return false
+
   return absDx === 1 && absDy === 1
 }
 
@@ -59,16 +63,19 @@ function isValidElephantMove(board: Board, from: Position, to: Position, color: 
   const dy = to.y - from.y
   const absDx = Math.abs(dx)
   const absDy = Math.abs(dy)
-  
-  if (color === 'red' && to.y > 4) return false
-  if (color === 'black' && to.y < 5) return false
-  
+
+  // 象不能过河：红方在下方(y>=5)，黑方在上方(y<=4)
+  if (color === 'red' && to.y < 5) return false
+  if (color === 'black' && to.y > 4) return false
+
+  // 必须走田字（对角线2格）
   if (absDx !== 2 || absDy !== 2) return false
-  
+
+  // 检查象眼是否有棋子（塞象眼）
   const eyeX = from.x + dx / 2
   const eyeY = from.y + dy / 2
   if (board.pieces[eyeY][eyeX]) return false
-  
+
   return true
 }
 
@@ -108,13 +115,19 @@ function isValidSoldierMove(from: Position, to: Position, color: PieceColor): bo
   const dy = to.y - from.y
   const absDx = Math.abs(dx)
   const absDy = Math.abs(dy)
-  
+
+  // 只能走一步
   if (absDx + absDy !== 1) return false
+
+  // 不能后退
   if (color === 'red' && dy > 0) return false
   if (color === 'black' && dy < 0) return false
-  if (color === 'red' && from.y <= 4 && dx !== 0) return false
-  if (color === 'black' && from.y >= 5 && dx !== 0) return false
-  
+
+  // 过河前只能向前走，不能横走
+  // 红方在下方(y>=5)，过河前是 y>=5；黑方在上方(y<=4)，过河前是 y<=4
+  if (color === 'red' && from.y >= 5 && dx !== 0) return false
+  if (color === 'black' && from.y <= 4 && dx !== 0) return false
+
   return true
 }
 
@@ -209,10 +222,11 @@ export function isCheckmate(board: Board, color: PieceColor): boolean {
       if (dx === 0 && dy === 0) continue
       const toX = generalPos!.x + dx
       const toY = generalPos!.y + dy
-      
+
       if (toX < 3 || toX > 5) continue
-      if (color === 'red' && (toY < 0 || toY > 2)) continue
-      if (color === 'black' && (toY < 7 || toY > 9)) continue
+      // 红方在下方(y=7-9)，黑方在上方(y=0-2)
+      if (color === 'red' && (toY < 7 || toY > 9)) continue
+      if (color === 'black' && (toY < 0 || toY > 2)) continue
       
       const target = board.pieces[toY][toX]
       if (target && target.color === color) continue
@@ -238,8 +252,8 @@ export function generateNotation(piece: Piece, from: Position, to: Position, cap
     general: piece.color === 'red' ? '帅' : '将',
     advisor: piece.color === 'red' ? '仕' : '士',
     elephant: piece.color === 'red' ? '相' : '象',
-    horse: '马',
-    chariot: '车',
+    horse: '馬',
+    chariot: '車',
     cannon: '炮',
     soldier: piece.color === 'red' ? '兵' : '卒',
   }
