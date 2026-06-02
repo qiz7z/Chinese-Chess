@@ -4,30 +4,29 @@
     <nav class="navbar">
       <div class="nav-container">
         <div class="logo">
-          <span class="logo-icon">♟</span>
           <svg viewBox="0 0 200 200" class="logo-icon">
             <defs>
-              <radialGradient id="newRed" cx="50%" cy="40%" r="50%">
+              <radialGradient id="navRed" cx="50%" cy="40%" r="50%">
                 <stop offset="0%" style="stop-color:#FCEBEB"/>
                 <stop offset="100%" style="stop-color:#E24B4A"/>
               </radialGradient>
-              <radialGradient id="newBlack" cx="50%" cy="40%" r="50%">
+              <radialGradient id="navBlack" cx="50%" cy="40%" r="50%">
                 <stop offset="0%" style="stop-color:#F1EFE8"/>
                 <stop offset="100%" style="stop-color:#5F5E5A"/>
               </radialGradient>
             </defs>
             <circle cx="100" cy="100" r="95" fill="#FCEBEB" stroke="#E24B4A" stroke-width="2"/>
-            <circle cx="65" cy="75" r="28" fill="url(#newRed)" stroke="#A32D2D" stroke-width="1.5"/>
-            <circle cx="65" cy="75" r="22" fill="none" stroke="#A32D2D" stroke-width="0.8" opacity="0.4"/>
-            <text x="65" y="80" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="22" font-weight="bold" fill="#791F1F">帅</text>
-            <circle cx="135" cy="75" r="28" fill="url(#newBlack)" stroke="#2C2C2A" stroke-width="1.5"/>
-            <circle cx="135" cy="75" r="22" fill="none" stroke="#2C2C2A" stroke-width="0.8" opacity="0.4"/>
-            <text x="135" y="80" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="22" font-weight="bold" fill="#18191C">将</text>
-            <line x1="40" y1="115" x2="160" y2="115" stroke="#E24B4A" stroke-width="2" opacity="0.6"/>
-            <circle cx="65" cy="140" r="16" fill="url(#newRed)" stroke="#A32D2D" stroke-width="1"/>
-            <text x="65" y="144" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="12" font-weight="bold" fill="#791F1F">車</text>
-            <circle cx="135" cy="140" r="16" fill="url(#newBlack)" stroke="#2C2C2A" stroke-width="1"/>
-            <text x="135" y="144" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="12" font-weight="bold" fill="#18191C">車</text>
+            <circle cx="60" cy="70" r="30" fill="url(#navRed)" stroke="#A32D2D" stroke-width="1.5"/>
+            <circle cx="60" cy="70" r="24" fill="none" stroke="#A32D2D" stroke-width="0.8" opacity="0.4"/>
+            <text x="60" y="76" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="24" font-weight="bold" fill="#791F1F">帅</text>
+            <circle cx="140" cy="70" r="30" fill="url(#navBlack)" stroke="#2C2C2A" stroke-width="1.5"/>
+            <circle cx="140" cy="70" r="24" fill="none" stroke="#2C2C2A" stroke-width="0.8" opacity="0.4"/>
+            <text x="140" y="76" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="24" font-weight="bold" fill="#18191C">将</text>
+            <line x1="30" y1="115" x2="170" y2="115" stroke="#E24B4A" stroke-width="2" opacity="0.6"/>
+            <circle cx="60" cy="145" r="18" fill="url(#navRed)" stroke="#A32D2D" stroke-width="1"/>
+            <text x="60" y="150" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="14" font-weight="bold" fill="#791F1F">車</text>
+            <circle cx="140" cy="145" r="18" fill="url(#navBlack)" stroke="#2C2C2A" stroke-width="1"/>
+            <text x="140" y="150" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="14" font-weight="bold" fill="#18191C">車</text>
           </svg>
           <span class="logo-text">{{ t('logo') }}</span>
         </div>
@@ -178,65 +177,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { messages, type Language } from '../i18n'
 
 const router = useRouter()
 
 // 语言状态
-const currentLang = ref<'zh' | 'en'>('zh')
-
-// 多语言配置
-const messages = {
-  zh: {
-    logo: '中国象棋',
-    startGame: '开始游戏',
-    heroTitle1: '千年智慧',
-    heroTitle2: '楚河汉界',
-    heroSubtitle: '体验中国传统棋艺的魅力',
-    playNow: '立即对战',
-    learnMore: '了解更多',
-    yearsHistory: '年历史',
-    pieces: '枚棋子',
-    aiBattle: '智能对战',
-    featuresTitle: '游戏特色',
-    featuresSubtitle: '经典规则，现代体验',
-    feature1Title: '双人对战',
-    feature1Desc: '与朋友同屏对弈，享受面对面博弈的乐趣',
-    feature2Title: '人机对战',
-    feature2Desc: '两种 AI 难度，从新手到大师都能找到对手',
-    feature3Title: '完整规则',
-    feature3Desc: '标准中国象棋规则，自动验证合法走法',
-    feature4Title: '智能提示',
-    feature4Desc: '将军检测、悔棋功能、走法提示',
-    ctaTitle: '准备好开始了吗？',
-    ctaDesc: '立即体验中国最经典的策略游戏',
-    footer: '中国象棋游戏。传承经典，智享未来'
-  },
-  en: {
-    logo: 'Chinese Chess',
-    startGame: 'Play Now',
-    heroTitle1: 'Ancient Wisdom',
-    heroTitle2: 'Riverside Battle',
-    heroSubtitle: 'Experience the charm of traditional Chinese chess',
-    playNow: 'Start Game',
-    learnMore: 'Learn More',
-    yearsHistory: 'Years of History',
-    pieces: 'Chess Pieces',
-    aiBattle: 'AI Battle',
-    featuresTitle: 'Features',
-    featuresSubtitle: 'Classic rules, modern experience',
-    feature1Title: 'Two Player',
-    feature1Desc: 'Play against friends on the same screen for face-to-face fun',
-    feature2Title: 'vs AI',
-    feature2Desc: 'Two AI difficulty levels, from beginner to master',
-    feature3Title: 'Full Rules',
-    feature3Desc: 'Standard Chinese chess rules with automatic move validation',
-    feature4Title: 'Smart Hints',
-    feature4Desc: 'Check detection, undo moves, move suggestions',
-    ctaTitle: 'Ready to Play?',
-    ctaDesc: "Experience China's most classic strategy game now",
-    footer: 'Chinese Chess Game. Preserving tradition, enjoying wisdom'
-  }
-}
+const currentLang = ref<Language>('zh')
 
 // 翻译函数
 const t = (key: string): string => {
@@ -292,8 +238,9 @@ const scrollToFeatures = () => {
 }
 
 .logo-icon {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
 }
 
 .logo-text {

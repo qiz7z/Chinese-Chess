@@ -38,8 +38,8 @@
           <text x="135" y="144" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="12" font-weight="bold" fill="#18191C">車</text>
         </svg>
         <div class="logo-text">
-          <span class="logo-title">中国象棋</span>
-          <span class="logo-subtitle">Chinese Chess</span>
+          <span class="logo-title">{{ t('gameTitle') }}</span>
+          <span class="logo-subtitle">{{ t('gameSubtitle') }}</span>
         </div>
       </div>
 
@@ -49,12 +49,19 @@
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
-            <span>返回首页</span>
+            <span>{{ t('backToHome') }}</span>
+          </button>
+
+          <button @click="toggleLanguage" class="lang-btn">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+            </svg>
+            <span>{{ currentLang === 'zh' ? 'EN' : '中' }}</span>
           </button>
           
           <div class="turn-indicator" :class="gameStore.currentTurn">
             <span class="turn-icon">{{ gameStore.currentTurn === 'red' ? '🔴' : '⚫' }}</span>
-            <span class="turn-text">{{ gameStore.currentTurn === 'red' ? '红方' : '黑方' }}走棋</span>
+            <span class="turn-text">{{ gameStore.currentTurn === 'red' ? t('redTurn') : t('blackTurn') }}</span>
           </div>
         </div>
         
@@ -62,92 +69,92 @@
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
-          <span>将军!</span>
+          <span>{{ t('check') }}</span>
         </div>
 
         <div v-if="gameStore.isGameOver" class="game-over-alert">
           <span v-if="gameStore.winner">
-            🎉 {{ gameStore.winner === 'red' ? '红方' : '黑方' }}获胜！
+            🎉 {{ gameStore.winner === 'red' ? t('redWin') : t('blackWin') }}
           </span>
-          <span v-else>🤝 和棋！</span>
+          <span v-else>🤝 {{ t('draw') }}</span>
         </div>
       </div>
 
       <div class="control-section">
-        <h3 class="control-title">游戏设置</h3>
-        
+        <h3 class="control-title">{{ t('gameSettings') }}</h3>
+
         <div class="mode-selector">
           <label class="mode-label">
-            <input 
-              type="radio" 
-              v-model="selectedMode" 
+            <input
+              type="radio"
+              v-model="selectedMode"
               value="pvp"
               @change="handleModeChange"
             />
-            <span>双人对战</span>
+            <span>{{ t('pvpMode') }}</span>
           </label>
           <label class="mode-label">
-            <input 
-              type="radio" 
-              v-model="selectedMode" 
+            <input
+              type="radio"
+              v-model="selectedMode"
               value="ai-easy"
               @change="handleModeChange"
             />
-            <span>人机对战 (简单)</span>
+            <span>{{ t('aiEasyMode') }}</span>
           </label>
           <label class="mode-label">
-            <input 
-              type="radio" 
-              v-model="selectedMode" 
+            <input
+              type="radio"
+              v-model="selectedMode"
               value="ai-hard"
               @change="handleModeChange"
             />
-            <span>人机对战 (强力)</span>
+            <span>{{ t('aiHardMode') }}</span>
           </label>
         </div>
       </div>
 
       <div class="control-section">
-        <h3 class="control-title">游戏操作</h3>
-        
+        <h3 class="control-title">{{ t('gameActions') }}</h3>
+
         <div class="action-buttons">
           <button @click="handleNewGame" class="action-btn new-game">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
-            新游戏
+            {{ t('newGame') }}
           </button>
-          
-          <button 
-            @click="handleUndo" 
+
+          <button
+            @click="handleUndo"
             class="action-btn undo"
             :disabled="gameStore.moveHistory.length === 0"
           >
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
             </svg>
-            悔棋
+            {{ t('undo') }}
           </button>
-          
-          <button 
-            @click="handleHint" 
+
+          <button
+            @click="handleHint"
             class="action-btn hint"
             :disabled="!gameStore.selectedPiece"
           >
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-            提示
+            {{ t('hint') }}
           </button>
         </div>
       </div>
 
       <div class="control-section">
-        <h3 class="control-title">走棋历史</h3>
-        
+        <h3 class="control-title">{{ t('moveHistory') }}</h3>
+
         <div class="move-history">
-          <div 
-            v-for="(move, index) in gameStore.moveHistory" 
+          <div
+            v-for="(move, index) in gameStore.moveHistory"
             :key="index"
             class="move-item"
             :class="{ last: index === gameStore.moveHistory.length - 1 }"
@@ -155,9 +162,9 @@
             <span class="move-number">{{ index + 1 }}.</span>
             <span class="move-text">{{ move.notation }}</span>
           </div>
-          
+
           <div v-if="gameStore.moveHistory.length === 0" class="no-moves">
-            暂无走棋记录
+            {{ t('noMoves') }}
           </div>
         </div>
       </div>
@@ -170,19 +177,19 @@
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          新游戏
+          {{ t('newGame') }}
         </button>
         <button @click="handleUndo" class="menu-item" :disabled="gameStore.moveHistory.length === 0">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
           </svg>
-          悔棋
+          {{ t('undo') }}
         </button>
         <button @click="goHome" class="menu-item">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
-          返回首页
+          {{ t('backToHome') }}
         </button>
         <button @click="toggleMenu" class="menu-item close">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,9 +203,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '../stores/game'
+import { messages, type Language } from '../i18n'
 import ChessBoard from '../components/ChessBoard.vue'
 import type { Piece, Position, GameMode } from '../types'
 
@@ -208,6 +216,17 @@ const gameStore = useGameStore()
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024)
 const showMenu = ref(false)
 const selectedMode = ref<GameMode>(gameStore.gameMode)
+const currentLang = ref<Language>('zh')
+
+// 翻译函数
+const t = (key: string): string => {
+  return (messages[currentLang.value] as any)[key] || key
+}
+
+// 切换语言
+const toggleLanguage = () => {
+  currentLang.value = currentLang.value === 'zh' ? 'en' : 'zh'
+}
 
 // 监听窗口大小变化
 const handleResize = () => {
@@ -244,7 +263,7 @@ const handleModeChange = () => {
 }
 
 const handleNewGame = () => {
-  if (confirm('确定要开始新游戏吗？')) {
+  if (confirm(t('confirmNewGame'))) {
     gameStore.resetGame()
     toggleMenu()
   }
@@ -308,6 +327,31 @@ const handleHint = () => {
   border-bottom: 2px solid rgba(220, 38, 38, 0.2);
 }
 
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  background: transparent;
+  color: #7F1D1D;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: #DC2626;
+}
+
+.lang-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
 .logo-icon {
   width: 60px;
   height: 60px;
@@ -360,9 +404,11 @@ const handleHint = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid rgba(220, 38, 38, 0.2);
+  flex-wrap: wrap;
 }
 
 .turn-indicator {
