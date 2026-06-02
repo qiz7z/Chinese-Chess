@@ -11,6 +11,38 @@
 
     <!-- Game Controls -->
     <aside class="game-controls-panel">
+      <!-- 游戏图标 -->
+      <div class="game-logo">
+        <svg viewBox="0 0 200 200" class="logo-icon">
+          <defs>
+            <radialGradient id="gameRed" cx="50%" cy="40%" r="50%">
+              <stop offset="0%" style="stop-color:#FCEBEB"/>
+              <stop offset="100%" style="stop-color:#E24B4A"/>
+            </radialGradient>
+            <radialGradient id="gameBlack" cx="50%" cy="40%" r="50%">
+              <stop offset="0%" style="stop-color:#F1EFE8"/>
+              <stop offset="100%" style="stop-color:#5F5E5A"/>
+            </radialGradient>
+          </defs>
+          <circle cx="100" cy="100" r="95" fill="#FCEBEB" stroke="#E24B4A" stroke-width="2"/>
+          <circle cx="65" cy="75" r="28" fill="url(#gameRed)" stroke="#A32D2D" stroke-width="1.5"/>
+          <circle cx="65" cy="75" r="22" fill="none" stroke="#A32D2D" stroke-width="0.8" opacity="0.4"/>
+          <text x="65" y="80" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="22" font-weight="bold" fill="#791F1F">帅</text>
+          <circle cx="135" cy="75" r="28" fill="url(#gameBlack)" stroke="#2C2C2A" stroke-width="1.5"/>
+          <circle cx="135" cy="75" r="22" fill="none" stroke="#2C2C2A" stroke-width="0.8" opacity="0.4"/>
+          <text x="135" y="80" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="22" font-weight="bold" fill="#18191C">将</text>
+          <line x1="40" y1="115" x2="160" y2="115" stroke="#E24B4A" stroke-width="2" opacity="0.6"/>
+          <circle cx="65" cy="140" r="16" fill="url(#gameRed)" stroke="#A32D2D" stroke-width="1"/>
+          <text x="65" y="144" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="12" font-weight="bold" fill="#791F1F">車</text>
+          <circle cx="135" cy="140" r="16" fill="url(#gameBlack)" stroke="#2C2C2A" stroke-width="1"/>
+          <text x="135" y="144" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="12" font-weight="bold" fill="#18191C">車</text>
+        </svg>
+        <div class="logo-text">
+          <span class="logo-title">中国象棋</span>
+          <span class="logo-subtitle">Chinese Chess</span>
+        </div>
+      </div>
+
       <div class="control-section">
         <div class="control-header">
           <button @click="goHome" class="back-btn">
@@ -264,6 +296,39 @@ const handleHint = () => {
   align-items: center;
   overflow: hidden;
   background: linear-gradient(135deg, #FEF2F2 0%, #FFF5F5 100%);
+}
+
+/* Game Logo */
+.game-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid rgba(220, 38, 38, 0.2);
+}
+
+.logo-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: 'Noto Serif TC', serif;
+  color: #7F1D1D;
+}
+
+.logo-subtitle {
+  font-size: 0.75rem;
+  color: #991B1B;
+  font-family: 'Noto Sans TC', sans-serif;
 }
 
 /* Game Header */

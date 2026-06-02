@@ -265,39 +265,47 @@ const drawPiece = (ctx: CanvasRenderingContext2D, piece: Piece, x: number, y: nu
   drawPieceAt(ctx, piece, centerX, centerY)
 }
 
-// 在指定位置绘制棋子（木质纹理效果）
+// 在指定位置绘制棋子（实木质感效果）
 const drawPieceAt = (ctx: CanvasRenderingContext2D, piece: Piece, centerX: number, centerY: number) => {
   const isRed = piece.color === 'red'
 
-  // 红方：红木色（偏红棕），黑方：黄杨木色（偏黄棕）
-  const textColor = isRed ? '#6B1A1A' : '#5D3A1A'
-  const borderColor = isRed ? '#8B3A3A' : '#8B4513'
-  const woodLineColor = isRed ? '#A05050' : '#C4A46C'
+  // 红方：红木色调，黑方：黄杨木色调
+  const textColor = isRed ? '#5A1A1A' : '#3D2A1A'
+  const borderColor = isRed ? '#6B3A3A' : '#5A4A3A'
+  const woodLine = isRed ? '#8B5A5A' : '#7A6A5A'
 
-  // 1. 阴影（小而淡）
+  // 1. 阴影（立体感）
   ctx.save()
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
   ctx.beginPath()
-  ctx.ellipse(centerX, centerY + PIECE_RADIUS * 0.85, PIECE_RADIUS * 0.75, PIECE_RADIUS * 0.12, 0, 0, Math.PI * 2)
+  ctx.ellipse(centerX, centerY + PIECE_RADIUS * 0.9, PIECE_RADIUS * 0.8, PIECE_RADIUS * 0.15, 0, 0, Math.PI * 2)
   ctx.fill()
   ctx.restore()
 
-  // 2. 主体（木质径向渐变）
+  // 2. 底层（模拟厚度）
+  ctx.save()
+  ctx.fillStyle = isRed ? '#C08070' : '#9A8A7A'
+  ctx.beginPath()
+  ctx.arc(centerX, centerY + 3, PIECE_RADIUS, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+
+  // 3. 主体（实木径向渐变）
   ctx.save()
   const gradient = ctx.createRadialGradient(
-    centerX, centerY - PIECE_RADIUS * 0.1, 0,
+    centerX - PIECE_RADIUS * 0.3, centerY - PIECE_RADIUS * 0.3, 0,
     centerX, centerY, PIECE_RADIUS
   )
   if (isRed) {
-    // 红木：偏红的木质色调
-    gradient.addColorStop(0, '#F5D5C8')
-    gradient.addColorStop(0.5, '#E8B4A0')
-    gradient.addColorStop(1, '#D49080')
+    gradient.addColorStop(0, '#F5D5C5')
+    gradient.addColorStop(0.3, '#E8B8A5')
+    gradient.addColorStop(0.6, '#D49888')
+    gradient.addColorStop(1, '#C08070')
   } else {
-    // 黄杨木：偏黄的木质色调
-    gradient.addColorStop(0, '#F5E6C8')
-    gradient.addColorStop(0.5, '#E8D4A0')
-    gradient.addColorStop(1, '#D4C080')
+    gradient.addColorStop(0, '#F5E8D5')
+    gradient.addColorStop(0.3, '#E8D8C0')
+    gradient.addColorStop(0.6, '#D4C8B0')
+    gradient.addColorStop(1, '#B8A898')
   }
   ctx.fillStyle = gradient
   ctx.beginPath()
@@ -310,36 +318,54 @@ const drawPieceAt = (ctx: CanvasRenderingContext2D, piece: Piece, centerX: numbe
   ctx.stroke()
   ctx.restore()
 
-  // 3. 木纹纹理（水平线条）
+  // 4. 木纹纹理（多层线条）
   ctx.save()
   ctx.beginPath()
-  ctx.arc(centerX, centerY, PIECE_RADIUS, 0, Math.PI * 2)
+  ctx.arc(centerX, centerY, PIECE_RADIUS - 1, 0, Math.PI * 2)
   ctx.clip()
 
-  ctx.globalAlpha = 0.25
-  ctx.strokeStyle = woodLineColor
-  ctx.lineWidth = 0.5
+  ctx.strokeStyle = woodLine
+  ctx.globalAlpha = 0.2
 
-  // 绘制多条水平线模拟木纹
-  for (let i = -PIECE_RADIUS; i < PIECE_RADIUS; i += 4) {
+  // 绘制弧形木纹
+  for (let i = 0; i < 8; i++) {
+    ctx.lineWidth = 0.3 + Math.random() * 0.4
     ctx.beginPath()
-    ctx.moveTo(centerX - PIECE_RADIUS, centerY + i)
-    ctx.lineTo(centerX + PIECE_RADIUS, centerY + i)
+    const offset = (i - 4) * 6
+    ctx.ellipse(centerX + offset * 0.5, centerY, PIECE_RADIUS * 1.2, PIECE_RADIUS * 0.8, 0, 0, Math.PI * 2)
     ctx.stroke()
   }
   ctx.restore()
 
-  // 4. 内圈装饰线
+  // 5. 内圈装饰线（双线）
   ctx.save()
   ctx.strokeStyle = borderColor
-  ctx.lineWidth = 1
-  ctx.globalAlpha = 0.5
+  ctx.globalAlpha = 0.6
+  ctx.lineWidth = 1.2
   ctx.beginPath()
-  ctx.arc(centerX, centerY, PIECE_RADIUS * 0.8, 0, Math.PI * 2)
+  ctx.arc(centerX, centerY, PIECE_RADIUS * 0.82, 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.lineWidth = 0.5
+  ctx.beginPath()
+  ctx.arc(centerX, centerY, PIECE_RADIUS * 0.78, 0, Math.PI * 2)
   ctx.stroke()
   ctx.restore()
 
-  // 5. 棋子文字
+  // 6. 高光（左上角）
+  ctx.save()
+  const highlightGrad = ctx.createRadialGradient(
+    centerX - PIECE_RADIUS * 0.3, centerY - PIECE_RADIUS * 0.3, 0,
+    centerX - PIECE_RADIUS * 0.3, centerY - PIECE_RADIUS * 0.3, PIECE_RADIUS * 0.4
+  )
+  highlightGrad.addColorStop(0, 'rgba(255, 255, 255, 0.25)')
+  highlightGrad.addColorStop(1, 'rgba(255, 255, 255, 0)')
+  ctx.fillStyle = highlightGrad
+  ctx.beginPath()
+  ctx.arc(centerX, centerY, PIECE_RADIUS, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.restore()
+
+  // 7. 棋子文字
   ctx.fillStyle = textColor
   ctx.font = `bold ${PIECE_RADIUS * 0.7}px KaiTi, STKaiti, serif`
   ctx.textAlign = 'center'

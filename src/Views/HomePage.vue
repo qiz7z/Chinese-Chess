@@ -5,6 +5,30 @@
       <div class="nav-container">
         <div class="logo">
           <span class="logo-icon">♟</span>
+          <svg viewBox="0 0 200 200" class="logo-icon">
+            <defs>
+              <radialGradient id="newRed" cx="50%" cy="40%" r="50%">
+                <stop offset="0%" style="stop-color:#FCEBEB"/>
+                <stop offset="100%" style="stop-color:#E24B4A"/>
+              </radialGradient>
+              <radialGradient id="newBlack" cx="50%" cy="40%" r="50%">
+                <stop offset="0%" style="stop-color:#F1EFE8"/>
+                <stop offset="100%" style="stop-color:#5F5E5A"/>
+              </radialGradient>
+            </defs>
+            <circle cx="100" cy="100" r="95" fill="#FCEBEB" stroke="#E24B4A" stroke-width="2"/>
+            <circle cx="65" cy="75" r="28" fill="url(#newRed)" stroke="#A32D2D" stroke-width="1.5"/>
+            <circle cx="65" cy="75" r="22" fill="none" stroke="#A32D2D" stroke-width="0.8" opacity="0.4"/>
+            <text x="65" y="80" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="22" font-weight="bold" fill="#791F1F">帅</text>
+            <circle cx="135" cy="75" r="28" fill="url(#newBlack)" stroke="#2C2C2A" stroke-width="1.5"/>
+            <circle cx="135" cy="75" r="22" fill="none" stroke="#2C2C2A" stroke-width="0.8" opacity="0.4"/>
+            <text x="135" y="80" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="22" font-weight="bold" fill="#18191C">将</text>
+            <line x1="40" y1="115" x2="160" y2="115" stroke="#E24B4A" stroke-width="2" opacity="0.6"/>
+            <circle cx="65" cy="140" r="16" fill="url(#newRed)" stroke="#A32D2D" stroke-width="1"/>
+            <text x="65" y="144" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="12" font-weight="bold" fill="#791F1F">車</text>
+            <circle cx="135" cy="140" r="16" fill="url(#newBlack)" stroke="#2C2C2A" stroke-width="1"/>
+            <text x="135" y="144" text-anchor="middle" font-family="KaiTi, STKaiti, serif" font-size="12" font-weight="bold" fill="#18191C">車</text>
+          </svg>
           <span class="logo-text">{{ t('logo') }}</span>
         </div>
         <div class="nav-right">
@@ -268,8 +292,8 @@ const scrollToFeatures = () => {
 }
 
 .logo-icon {
-  font-size: 2rem;
-  color: #DC2626;
+  width: 40px;
+  height: 40px;
 }
 
 .logo-text {
