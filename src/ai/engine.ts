@@ -154,10 +154,6 @@ function generatePieceMoves(board: Board, piece: Piece, from: Position): Move[] 
 
 // 验证走棋合法性（完整版本）
 function isValidMove(board: Board, from: Position, to: Position, piece: Piece): boolean {
-  const dx = to.x - from.x
-  const dy = to.y - from.y
-  const absDx = Math.abs(dx)
-  const absDy = Math.abs(dy)
   const target = board.pieces[to.y][to.x]
   
   // 不能吃己方棋子
@@ -184,7 +180,7 @@ function isValidMove(board: Board, from: Position, to: Position, piece: Piece): 
 }
 
 // 将/帅走棋规则
-function isValidGeneralMove(board: Board, from: Position, to: Position, color: PieceColor): boolean {
+function isValidGeneralMove(_board: Board, from: Position, to: Position, color: PieceColor): boolean {
   const dx = to.x - from.x
   const dy = to.y - from.y
   const absDx = Math.abs(dx)
@@ -346,7 +342,7 @@ function getBestMoveSimple(board: Board, color: PieceColor): Move | null {
 }
 
 // 评估走棋价值
-function evaluateMove(board: Board, move: Move, color: PieceColor): number {
+function evaluateMove(board: Board, move: Move, _color: PieceColor): number {
   let score = 0
 
   // 吃子价值（高权重）

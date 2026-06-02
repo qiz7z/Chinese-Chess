@@ -1,3 +1,22 @@
+import { ref } from 'vue'
+
+// 全局语言状态（使用 localStorage 持久化）
+const savedLang = typeof localStorage !== 'undefined' ? localStorage.getItem('chess-lang') : null
+export const currentLang = ref<'zh' | 'en'>((savedLang as 'zh' | 'en') || 'zh')
+
+// 切换语言
+export const toggleLanguage = () => {
+  currentLang.value = currentLang.value === 'zh' ? 'en' : 'zh'
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('chess-lang', currentLang.value)
+  }
+}
+
+// 翻译函数
+export const t = (key: string): string => {
+  return (messages[currentLang.value] as any)[key] || key
+}
+
 // 多语言配置
 export const messages = {
   zh: {
@@ -47,6 +66,7 @@ export const messages = {
     moveHistory: '走棋历史',
     noMoves: '暂无走棋记录',
     confirmNewGame: '确定要开始新游戏吗？',
+    close: '关闭',
   },
   en: {
     // Homepage
@@ -95,6 +115,7 @@ export const messages = {
     moveHistory: 'Move History',
     noMoves: 'No moves yet',
     confirmNewGame: 'Start a new game?',
+    close: 'Close',
   }
 }
 

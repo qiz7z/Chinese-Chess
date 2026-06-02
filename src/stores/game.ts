@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { GameState, Piece, Move, Position, Board, GameMode } from '../types'
-import { PIECE_VALUES, INITIAL_POSITIONS } from '../types'
+import type { Piece, Move, Position, Board, GameMode, PieceColor, PieceType } from '../types'
+import { INITIAL_POSITIONS } from '../types'
 import { isValidMove, generateValidMoves, isCheckState, isCheckmate, generateNotation } from '../rules/validator'
 import { makeAIMove } from '../ai/engine'
 
@@ -12,7 +12,7 @@ function createInitialBoard(): Board {
   INITIAL_POSITIONS.red.forEach(({ type, position }, index) => {
     pieces[position.y][position.x] = {
       id: `red-${type}-${index}`,
-      type,
+      type: type as PieceType,
       color: 'red',
       position: { ...position },
     }
@@ -22,7 +22,7 @@ function createInitialBoard(): Board {
   INITIAL_POSITIONS.black.forEach(({ type, position }, index) => {
     pieces[position.y][position.x] = {
       id: `black-${type}-${index}`,
-      type,
+      type: type as PieceType,
       color: 'black',
       position: { ...position },
     }
@@ -42,6 +42,7 @@ export const useGameStore = defineStore('game', () => {
   const isCheck = ref(false)
   const lastMove = ref<Move | null>(null)
   const validMoves = ref<Position[]>([])
+  let aiTimeoutId: ReturnType<typeof setTimeout> | null = null
 
   // 获取指定位置的棋子
   const getPieceAt = (position: Position): Piece | null => {
@@ -78,22 +79,11 @@ export const useGameStore = defineStore('game', () => {
     isCheck.value = false
     lastMove.value = null
     validMoves.value = []
-  }
-
-  // 检查是否还有将/帅
-  const hasGeneral = (color: PieceColor): boolean => {
-    for (let y = 0; y < 10; y++) {
-      for (let x = 0; x < 9; x++) {
-        const piece = board.value.pieces[y][x]
-        if (piece && piece.type === 'general' && piece.color === color) {
-          return true
-        }
-      }
+    if (aiTimeoutId) {
+      clearTimeout(aiTimeoutId)
+      aiTimeoutId = null
     }
-    return false
   }
-
-  // 走棋
   const makeMove = (from: Position, to: Position): boolean => {
     // 游戏已结束，不允许走棋
     if (isGameOver.value) return false
@@ -121,7 +111,7 @@ export const useGameStore = defineStore('game', () => {
       to,
       piece: { ...piece },
       captured: captured ? { ...captured } : undefined,
-      notation: generateNotation(piece, from, to, captured),
+      notation: generateNotation(piece, from, to, captured || undefined),
     }
     moveHistory.value.push(move)
     lastMove.value = move
@@ -152,7 +142,8 @@ export const useGameStore = defineStore('game', () => {
 
     // 人机模式下，AI 自动走棋
     if (gameMode.value !== 'pvp' && currentTurn.value === 'black') {
-      setTimeout(() => {
+      aiTimeoutId = setTimeout(() => {
+        aiTimeoutId = null
         makeComputerMove()
       }, 500) // 延迟 500ms 让玩家看到自己的走法
     }
@@ -194,7 +185,7 @@ export const useGameStore = defineStore('game', () => {
       to,
       piece: { ...piece },
       captured: captured ? { ...captured } : undefined,
-      notation: generateNotation(piece, from, to, captured),
+      notation: generateNotation(piece, from, to, captured || undefined),
     }
     moveHistory.value.push(move)
     lastMove.value = move

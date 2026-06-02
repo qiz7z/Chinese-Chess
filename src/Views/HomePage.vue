@@ -175,24 +175,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { messages, type Language } from '../i18n'
+import { currentLang, toggleLanguage, t } from '../i18n'
 
 const router = useRouter()
-
-// 语言状态
-const currentLang = ref<Language>('zh')
-
-// 翻译函数
-const t = (key: string): string => {
-  return (messages[currentLang.value] as any)[key] || key
-}
-
-// 切换语言
-const toggleLanguage = () => {
-  currentLang.value = currentLang.value === 'zh' ? 'en' : 'zh'
-}
 
 const goToGame = () => {
   router.push('/game')

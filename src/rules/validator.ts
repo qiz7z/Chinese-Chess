@@ -202,59 +202,48 @@ export function isCheckState(board: Board, color: PieceColor): boolean {
 
 export function isCheckmate(board: Board, color: PieceColor): boolean {
   if (!isCheckState(board, color)) return false
-  
-  let generalPos: Position | null = null
-  for (let y = 0; y < 10; y++) {
-    for (let x = 0; x < 9; x++) {
-      const piece = board.pieces[y][x]
-      if (piece && piece.type === 'general' && piece.color === color) {
-        generalPos = { x, y }
-        break
+
+  // 尝试该颜色的每一个棋子的每一种走法
+  // 只要有一种走法能解除将军，就不是将死
+  for (let fromY = 0; fromY < 10; fromY++) {
+    for (let fromX = 0; fromX < 9; fromX++) {
+      const piece = board.pieces[fromY][fromX]
+      if (!piece || piece.color !== color) continue
+
+      for (let toY = 0; toY < 10; toY++) {
+        for (let toX = 0; toX < 9; toX++) {
+          if (fromX === toX && fromY === toY) continue
+
+          if (!isValidMove(board, { x: fromX, y: fromY }, { x: toX, y: toY })) continue
+
+          // 模拟走棋
+          const captured = board.pieces[toY][toX]
+          board.pieces[toY][toX] = piece
+          board.pieces[fromY][fromX] = null
+
+          const stillCheck = isCheckState(board, color)
+
+          // 撤销走棋
+          board.pieces[fromY][fromX] = piece
+          board.pieces[toY][toX] = captured
+
+          if (!stillCheck) return false // 有走法能解围，不是将死
+        }
       }
     }
-    if (generalPos) break
   }
-  
-  if (!generalPos) return true
-  
-  for (let dy = -1; dy <= 1; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      if (dx === 0 && dy === 0) continue
-      const toX = generalPos!.x + dx
-      const toY = generalPos!.y + dy
 
-      if (toX < 3 || toX > 5) continue
-      // 红方在下方(y=7-9)，黑方在上方(y=0-2)
-      if (color === 'red' && (toY < 7 || toY > 9)) continue
-      if (color === 'black' && (toY < 0 || toY > 2)) continue
-      
-      const target = board.pieces[toY][toX]
-      if (target && target.color === color) continue
-      
-      const general = board.pieces[generalPos!.y][generalPos!.x]!
-      board.pieces[toY][toX] = general
-      board.pieces[generalPos!.y][generalPos!.x] = null
-      
-      const stillCheck = isCheckState(board, color)
-      
-      board.pieces[generalPos!.y][generalPos!.x] = general
-      board.pieces[toY][toX] = target
-      
-      if (!stillCheck) return false
-    }
-  }
-  
-  return true
+  return true // 所有走法都无法解围，将死
 }
 
-export function generateNotation(piece: Piece, from: Position, to: Position, captured?: Piece): string {
+export function generateNotation(piece: Piece, _from: Position, to: Position, captured?: Piece): string {
   const pieceNames: Record<string, string> = {
     general: piece.color === 'red' ? '帅' : '将',
     advisor: piece.color === 'red' ? '仕' : '士',
     elephant: piece.color === 'red' ? '相' : '象',
     horse: '馬',
     chariot: '車',
-    cannon: '炮',
+    cannon: piece.color === 'red' ? '炮' : '砲',
     soldier: piece.color === 'red' ? '兵' : '卒',
   }
   
